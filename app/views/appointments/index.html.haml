@@ -1,5 +1,7 @@
 %h1 CalReact
 
 %h2 Appointments
+#appointments_data{data: @appointments.to_json}
+= javascript_pack_tag 'appointments'
+= stylesheet_pack_tag 'appointments'
 
-= react_component('Appointments', appointments: @appointments)
