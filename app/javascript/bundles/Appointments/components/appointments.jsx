@@ -5,7 +5,7 @@ import { AppointmentsList } from './appointments_list';
 import update from 'immutability-helper';
 
 export default class Appointments extends React.Component {
-  constructor (props) {
+  constructor (props, railsContext) {
     super(props)
     this.state = {
       appointments: this.props.appointments,
@@ -48,13 +48,3 @@ export default class Appointments extends React.Component {
     )
   }
 }
-
-document.addEventListener('DOMContentLoaded', () => {
-  const node = document.getElementById('appointments_data')
-  const data = JSON.parse(node.getAttribute('data'))
-
-  ReactDOM.render(
-    <Appointments appointments={data} />,
-    document.body.appendChild(document.createElement('div')),
-  )
-})
