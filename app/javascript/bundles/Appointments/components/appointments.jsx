@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import AppointmentForm from './appointment_form';
 import { AppointmentsList } from './appointments_list';
 import update from 'immutability-helper';
+import { FormErrors } from './FormErrors';
 
 export default class Appointments extends React.Component {
   constructor (props, railsContext) {
@@ -10,7 +11,8 @@ export default class Appointments extends React.Component {
     this.state = {
       appointments: this.props.appointments,
       title: 'Team standup meeting',
-      appt_time: '25 January 2016 9am'
+      appt_time: '25 January 2016 9am',
+      formErrors: {}
     }
   }
 
@@ -24,7 +26,15 @@ export default class Appointments extends React.Component {
             {appointment: appointment})
           .done((data) => {
             this.addNewAppointment(data);
+            this.resetFormErrors();
+          })
+          .fail((response) => {
+            this.setState({ formErrors: response.responseJSON });
           });
+  }
+
+  resetFormErrors() {
+    this.setState({formErrors: {}});
   }
 
   addNewAppointment (appointment) {
@@ -39,6 +49,7 @@ export default class Appointments extends React.Component {
   render () {
     return (
       <div>
+        <FormErrors formErrors={this.state.formErrors} />
         <AppointmentForm input_title={this.state.title}
           input_appt_time={this.state.appt_time}
           onUserInput={(obj) => this.handleUserInput(obj)}
