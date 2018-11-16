@@ -57,3 +57,5 @@ gem 'react_on_rails', '11.0.0'
 gem 'haml'
 gem 'webpacker', '~> 3.5'
 gem 'bootsnap'
+
+gem 'mini_racer', platforms: :ruby
