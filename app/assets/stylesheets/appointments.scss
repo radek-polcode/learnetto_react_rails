@@ -20,3 +20,13 @@ body {
     font-size: 20px;
     padding: 10px;
 }
+
+.submit-button:disabled {
+    background: #BBBBBB;
+    cursor: not-allowed;
+}
+
+.appointment {
+    padding-top: 10px;
+    border-bottom: solid 1px #ccc;
+}
