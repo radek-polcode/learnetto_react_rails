@@ -27,7 +27,30 @@ export default class AppointmentForm extends React.Component {
       title: { value: '', valid: false },
       appt_time: { value: new Date(), valid: false },
       formErrors: {},
-      formValid: false
+      formValid: false,
+      editing: false
+    }
+  }
+
+  componentDidMount () {
+    if(this.props.match) {
+      $.ajax({
+        type: "GET",
+        url: `/appointments/${this.props.match.params.id}`,
+        dataType: "JSON"
+      }).done((data) => {
+        this.setState({
+          title: { 
+            value: data.title,
+            valid: true
+          },
+          appt_time: {
+            value: data.appt_time,
+            valid: true
+          },
+          editing: this.props.match.path === "/appointments/:id/edit"
+        })
+      })
     }
   }
 
@@ -73,6 +96,14 @@ export default class AppointmentForm extends React.Component {
 
   handleFormSubmit = (e) => {
     e.preventDefault();
+    if (this.state.editing) {
+      this.updateAppointment();
+    } else {
+      this.addAppointment();
+    }
+  }
+
+  addAppointment () {
     const appointment = {
       title: this.state.title.value, 
       appt_time: this.state.appt_time.value
@@ -85,8 +116,34 @@ export default class AppointmentForm extends React.Component {
             this.resetFormErrors();
           })
           .fail((response) => {
-            this.setState({ formErrors: response.responseJSON });
+            this.setState({ 
+              formErrors: response.responseJSON,
+              formValid: false
+            });
           });
+  }
+
+  updateAppointment () {
+    const appointment = {
+      title: this.state.title.value, 
+      appt_time: this.state.appt_time.value
+    };
+
+    $.ajax({
+      type: 'PATCH',
+      url: `/appointments/${this.props.match.params.id}`,
+      data: { appointment: appointment }
+    })
+    .done((data) => {
+      console.log('updated');
+      this.resetFormErrors();
+    })
+    .fail((response) => {
+      this.setState({ 
+        formErrors: response.responseJSON,
+        formValid: false
+      });
+    });
   }
 
   resetFormErrors() {
@@ -120,7 +177,12 @@ export default class AppointmentForm extends React.Component {
 
     return(
       <div>
-        <h2>Make a new appointment</h2>
+        <h2>
+          { this.state.editing ?
+              "Update appointment" :
+              "Make a new appointment"
+          } 
+        </h2>
         <FormErrors formErrors={this.state.formErrors} />
         <form onSubmit={this.handleFormSubmit}>
           <input name='title' 
@@ -133,7 +195,7 @@ export default class AppointmentForm extends React.Component {
                     value={moment(this.state.appt_time.value)}
                     onChange={this.setApptTime} />
           <input type='submit' 
-                 value='Make Appointment'
+                 value={this.state.editing ? 'Update Appointment' : 'Make appointment' }
                  className='submit-button'
                  disabled={!this.state.formValid} />
         </form>
