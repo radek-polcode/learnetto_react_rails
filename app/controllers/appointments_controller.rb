@@ -38,6 +38,16 @@ class AppointmentsController < ApplicationController
     render :index
   end
 
+  def destroy
+    @appointment = Appointment.find_by(id: params[:id])
+
+    if @appointment.destroy
+      head :no_content, status: :ok
+    else
+      render json: @appointment.errors, status: :unprocessable_entity
+    end
+  end
+
   private
   def appointment_params
     params.require(:appointment).permit(:title, :appt_time)
