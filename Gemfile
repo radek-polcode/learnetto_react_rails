@@ -60,3 +60,4 @@ gem 'bootsnap'
 
 gem 'mini_racer', platforms: :ruby
 gem "figaro"
+gem 'devise'
