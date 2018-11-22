@@ -1,4 +1,5 @@
 class Appointment < ApplicationRecord
+  belongs_to :user
   validates :title, presence: true, length: { minimum: 3 }
   validates :appt_time, presence: true
 
